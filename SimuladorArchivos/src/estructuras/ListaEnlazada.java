@@ -69,4 +69,16 @@ public class ListaEnlazada<T> {
     public boolean isEmpty() {
         return tamaño == 0;
     }
+    
+    // Permite cambiar el dato en una posición específica (necesario para ordenar)
+    public void set(int index, T valor) {
+        if (index < 0 || index >= tamaño) {
+            throw new IndexOutOfBoundsException("Índice fuera de rango");
+        }
+        Nodo<T> actual = cabeza;
+        for (int i = 0; i < index; i++) {
+            actual = actual.getSiguiente();
+        }
+        actual.setDato(valor);
+    }
 }
