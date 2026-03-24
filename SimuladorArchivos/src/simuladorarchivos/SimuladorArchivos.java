@@ -8,13 +8,22 @@ package simuladorarchivos;
  *
  * @author alma
  */
+
+/**
+ * Clase Lanzadora (Launcher) del proyecto.
+ * Su única responsabilidad es actuar como el punto de arranque del simulador,
+ * separando la ejecución inicial de la lógica de la interfaz gráfica.
+ */
 public class SimuladorArchivos {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Lógica de arranque seguro para hilos de Swing
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // Instancia la ventana y la pone en pantalla
+                new gui.VentanaPrincipal().setVisible(true);
+            }
+        });
     }
-    
 }

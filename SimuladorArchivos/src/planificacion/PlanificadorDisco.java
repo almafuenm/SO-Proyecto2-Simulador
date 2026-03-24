@@ -11,21 +11,40 @@ package planificacion;
 
 import estructuras.ListaEnlazada;
 
+/**
+ * Clase encargada de la planificación de peticiones de entrada/salida (E/S) del disco.
+ * Implementa diversas políticas de despacho para optimizar el movimiento del cabezal 
+ * físico y reducir la latencia de acceso a los datos en el SD[cite: 109].
+ * * Lógica de Diseño: Encapsula algoritmos clásicos de planificación, permitiendo 
+ * comparar empíricamente el rendimiento de cada uno bajo diferentes cargas de trabajo.
+ */
 public class PlanificadorDisco {
     private int posicionCabezal;
-    private int limiteDisco = 200; // Valor de ejemplo para el extremo del disco
+    private int limiteDisco = 200; 
 
     public PlanificadorDisco(int posicionInicial) {
         this.posicionCabezal = posicionInicial;
     }
 
-    // 1. Algoritmo FIFO: Atiende las solicitudes en el orden en que llegaron
+    /**
+     * Algoritmo FIFO (First-In, First-Out).
+     * Lógica: Atiende las solicitudes en el orden estricto en que fueron generadas 
+     * por los procesos de usuario.
+     * Ventaja: Es el algoritmo más justo (no hay inanición), pero puede causar 
+     * desplazamientos excesivos del cabezal si las peticiones están dispersas [cite: 86-87].
+     */
     public ListaEnlazada<Integer> planificarFIFO(ListaEnlazada<Integer> solicitudes) {
-        // En FIFO el orden esperado es exactamente el mismo de entrada 
         return solicitudes; 
     }
 
-    // 2. Algoritmo SSTF: Shortest Seek Time First (Busca el más cercano al cabezal)
+    /**
+     * Algoritmo SSTF (Shortest Seek Time First).
+     * Lógica de Selección: Evalúa todas las solicitudes pendientes y selecciona 
+     * aquella que se encuentre a la menor distancia absoluta de la posición actual del cabezal.
+     * Transición de Estado: En cada iteración, el cabezal "salta" al bloque más cercano, 
+     * actualizando su posición para la siguiente evaluación hasta vaciar la cola.
+     * Nota: Minimiza el desplazamiento total, pero puede causar inanición en bloques lejanos.
+     */
     public ListaEnlazada<Integer> planificarSSTF(ListaEnlazada<Integer> solicitudes) {
         ListaEnlazada<Integer> resultado = new ListaEnlazada<>();
         ListaEnlazada<Integer> pendientes = copiaLista(solicitudes);
@@ -45,18 +64,24 @@ public class PlanificadorDisco {
 
             int elegido = pendientes.get(indiceMasCercano);
             resultado.add(elegido);
-            cabezalActual = elegido; // El cabezal se mueve a la nueva posición [cite: 53]
+            cabezalActual = elegido; 
             pendientes.remove(indiceMasCercano);
         }
         return resultado;
     }
 
-    // 3. Algoritmo SCAN (Elevador): Sube hasta el final y luego baja
+    /**
+     * Algoritmo SCAN (Algoritmo del Elevador).
+     * Lógica de Barrido: Divide las solicitudes en dos grupos (derecha e izquierda 
+     * del cabezal). El cabezal recorre el disco en una dirección hasta el extremo 
+     * y luego invierte el sentido para procesar el resto.
+     * Transición de Estado: El sistema transita de un modo ascendente a uno descendente 
+     * (o viceversa), asegurando que todas las peticiones sean atendidas en un ciclo completo.
+     */
     public ListaEnlazada<Integer> planificarSCAN(ListaEnlazada<Integer> solicitudes, boolean ascendente) {
         ListaEnlazada<Integer> resultado = new ListaEnlazada<>();
         ListaEnlazada<Integer> ordenadas = ordenarLista(copiaLista(solicitudes));
         
-        // Separar solicitudes a la derecha e izquierda del cabezal
         ListaEnlazada<Integer> derecha = new ListaEnlazada<>();
         ListaEnlazada<Integer> izquierda = new ListaEnlazada<>();
         
@@ -66,18 +91,23 @@ public class PlanificadorDisco {
         }
 
         if (ascendente) {
-            // Sube hasta el final y luego baja
             for (int i = 0; i < derecha.size(); i++) resultado.add(derecha.get(i));
             for (int i = izquierda.size() - 1; i >= 0; i--) resultado.add(izquierda.get(i));
         } else {
-            // Baja hasta el inicio y luego sube
             for (int i = izquierda.size() - 1; i >= 0; i--) resultado.add(izquierda.get(i));
             for (int i = 0; i < derecha.size(); i++) resultado.add(derecha.get(i));
         }
         return resultado;
     }
 
-    // 4. Algoritmo C-SCAN: Solo procesa en una dirección, luego salta al inicio
+    /**
+     * Algoritmo C-SCAN (Circular SCAN).
+     * Lógica de Flujo Único: Similar a SCAN, pero solo procesa solicitudes en una 
+     * dirección (ej. ascendente). Al llegar al final, el cabezal realiza un retorno 
+     * rápido al inicio sin procesar nada en el regreso.
+     * Ventaja: Proporciona un tiempo de espera más uniforme para todas las peticiones, 
+     * tratando el espacio de bloques como un bucle continuo.
+     */
     public ListaEnlazada<Integer> planificarCSCAN(ListaEnlazada<Integer> solicitudes) {
         ListaEnlazada<Integer> resultado = new ListaEnlazada<>();
         ListaEnlazada<Integer> ordenadas = ordenarLista(copiaLista(solicitudes));
@@ -90,23 +120,22 @@ public class PlanificadorDisco {
             else izquierda.add(ordenadas.get(i));
         }
 
-        // Procesa la derecha (62 -> 64... -> 180)
         for (int i = 0; i < derecha.size(); i++) resultado.add(derecha.get(i));
-        // Salta al inicio y procesa la izquierda (11 -> 34)
         for (int i = 0; i < izquierda.size(); i++) resultado.add(izquierda.get(i));
         
         return resultado;
     }
 
-    // Método de ordenamiento Burbuja (ya que no podemos usar java.util)
+    /**
+     * Lógica de Ordenamiento (Burbuja): Organiza las solicitudes de forma ascendente.
+     * Requisito Técnico: Implementado manualmente para evitar el uso de librerías 
+     * prohibidas de Java, permitiendo la división de grupos necesaria para SCAN y C-SCAN.
+     */
     private ListaEnlazada<Integer> ordenarLista(ListaEnlazada<Integer> lista) {
         int n = lista.size();
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
                 if (lista.get(j) > lista.get(j + 1)) {
-                    int temp = lista.get(j);
-                    // Aquí necesitarías un método 'set' en tu ListaEnlazada o hacerlo manual
-                    // Si no tienes 'set', podemos intercambiar los datos de los nodos
                     intercambiar(lista, j, j + 1);
                 }
             }
@@ -114,7 +143,6 @@ public class PlanificadorDisco {
         return lista;
     }
     
-    // Auxiliares
     private void intercambiar(ListaEnlazada<Integer> lista, int i, int j) {
         int temp = lista.get(i);
         lista.set(i, lista.get(j));
