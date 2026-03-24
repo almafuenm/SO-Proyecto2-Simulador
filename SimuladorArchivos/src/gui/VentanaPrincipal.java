@@ -394,6 +394,11 @@ for (int i = 0; i < bloquesOrdenados.size(); i++) {
     modeloLista.addElement("Bloque: " + bloquesOrdenados.get(i));
 }
 
+    // --- NUEVO CÓDIGO: ENCENDER LA ANIMACIÓN ---
+    // jPanel1 es el nombre por defecto, cámbialo si tu panel se llama distinto
+    animacion.AnimadorCabezal animador = new animacion.AnimadorCabezal((gui.PanelDisco) jPanel1); 
+    animador.animarRuta(bloquesOrdenados);
+    // ----------------------------------------------
 // 3. Le pasamos el modelo a tu JList
 listaSolicitudes.setModel(modeloLista);
 // --------------------------------------------------
