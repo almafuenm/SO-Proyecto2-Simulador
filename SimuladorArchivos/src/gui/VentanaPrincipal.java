@@ -151,7 +151,13 @@ this.admin = new logica_sistema.AdministradorArchivos(this.disco);
     boolean exito = admin.crearArchivo(nombre, tamano, dueno, colorAleatorio);
 
     if (exito) {
-        jPanel1.repaint(); // ¡MAGIA! Forzamos al panel a repintar los bloques ocupados
+        jPanel1.repaint();
+        if (exito) {
+    jPanel1.repaint(); // Actualiza el disco
+    actualizarTabla(); // <--- AGREGA ESTA LÍNEA
+    actualizarArbol(); // <--- AGREGA ESTA LÍNEA
+    javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo creado!");
+}
         javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo '" + nombre + "' creado con éxito!");
     } else {
         javax.swing.JOptionPane.showMessageDialog(this, "Error: No hay espacio suficiente en el disco.");
@@ -211,4 +217,43 @@ this.admin = new logica_sistema.AdministradorArchivos(this.disco);
     private javax.swing.JTable jTable1;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
+private void actualizarTabla() {
+    // Obtenemos el modelo de la tabla que dibujaste en el diseño
+    javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+    
+    // Limpiamos la tabla para no duplicar datos
+    modelo.setRowCount(0);
+
+    // Obtenemos la lista de archivos de la carpeta actual usando el Administrador
+    estructuras.ListaEnlazada<sistema_archivos.Archivo> listaArchivos = admin.getCarpetaActual().getArchivos();
+
+    for (int i = 0; i < listaArchivos.size(); i++) {
+        sistema_archivos.Archivo arc = listaArchivos.get(i);
+        
+        // Creamos la fila con: Nombre, Bloques, Inicio (primer bloque), Color
+        Object[] fila = {
+            arc.getNombre(), 
+            arc.getTamañoBloques(), 
+            arc.getBloquesAsignados().get(0), // Dirección del primer bloque [cite: 65]
+            "Color Asignado" // Aquí podrías poner el nombre del color o un indicador visual [cite: 66]
+        };
+        modelo.addRow(fila);
+    }
 }
+    private void actualizarArbol() {
+    // Nodo raíz visual
+    javax.swing.tree.DefaultMutableTreeNode rootVisual = new javax.swing.tree.DefaultMutableTreeNode(admin.getRaiz().getNombre());
+    
+    // Obtenemos los archivos de la carpeta actual
+    estructuras.ListaEnlazada<sistema_archivos.Archivo> archivos = admin.getCarpetaActual().getArchivos();
+    
+    for (int i = 0; i < archivos.size(); i++) {
+        // Agregamos cada archivo como un nodo hijo [cite: 28]
+        rootVisual.add(new javax.swing.tree.DefaultMutableTreeNode(archivos.get(i).getNombre()));
+    }
+
+    // Aplicamos el nuevo modelo al JTree que arrastraste
+    jTree1.setModel(new javax.swing.tree.DefaultTreeModel(rootVisual));
+}
+}
+
