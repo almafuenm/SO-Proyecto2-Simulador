@@ -21,8 +21,10 @@ public class PanelDisco extends JPanel {
     private final int TAMANO_BLOQUE = 20; 
     private final int COLUMNAS = 20; 
     
+    /**
      * Estado del Sistema: Almacena la ubicación física actual del cabezal de disco.
      * Es actualizada dinámicamente por el Animador según la política de planificación.
+     */
     private int posicionCabezal = 0; 
 
     public PanelDisco() {
