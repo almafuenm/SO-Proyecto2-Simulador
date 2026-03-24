@@ -60,6 +60,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         jScrollPane4 = new javax.swing.JScrollPane();
         tablaProcesos = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
+        btnTerminarProceso = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -161,6 +162,13 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
             }
         });
 
+        btnTerminarProceso.setText("Termianar Proceso");
+        btnTerminarProceso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTerminarProcesoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,32 +176,35 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton2)
-                                    .addComponent(jButton1))
-                                .addGap(41, 41, 41)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jButton3)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(8, 8, 8)
-                                .addComponent(txtNuevaPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4))
-                            .addComponent(jButton5)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jButton2)
+                                            .addComponent(jButton1))
+                                        .addGap(41, 41, 41)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jButton3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addGap(8, 8, 8)
+                                        .addComponent(txtNuevaPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton4))))
+                            .addComponent(jButton5)
+                            .addComponent(btnTerminarProceso))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -209,12 +220,9 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jScrollPane3)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(15, 15, 15)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(15, 15, 15)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jButton1)
@@ -224,16 +232,19 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
                                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(5, 5, 5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel1)
                                     .addComponent(txtNuevaPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton5)))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(jButton4)))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTerminarProceso)
+                        .addGap(0, 11, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -296,35 +307,46 @@ if (modo.equals("Modo Usuario")) {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-// 1. Obtener la fila seleccionada en la tabla
-int filaSeleccionada = jTable1.getSelectedRow();
-
-if (filaSeleccionada == -1) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un archivo de la tabla para eliminar.");
-    return;
-}
-
-// 2. Obtener el nombre del archivo de la primera columna (columna 0)
-String nombreEliminar = jTable1.getValueAt(filaSeleccionada, 0).toString();
-
-// 3. Confirmar eliminación
-int confirmar = javax.swing.JOptionPane.showConfirmDialog(this, 
-    "¿Estás seguro de eliminar '" + nombreEliminar + "'?", "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
-
-if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
-    // 4. Llamar al cerebro para liberar bloques y borrar de la lista
-    boolean exito = admin.eliminarArchivo(nombreEliminar);
-
-    if (exito) {
-        // 5. Actualizar toda la interfaz
-        jPanel1.repaint();   // Los bloques vuelven a blanco [cite: 35]
-        actualizarTabla();   // Desaparece de la tabla [cite: 67]
-        actualizarArbol();   // Desaparece del JTree [cite: 24]
-        javax.swing.JOptionPane.showMessageDialog(this, "Archivo eliminado y bloques liberados.");
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error al intentar eliminar el archivo.");
+// 1. Verificar si hay una fila seleccionada
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada == -1) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un archivo de la tabla para eliminar.");
+        return;
     }
-}        // TODO add your handling code here:
+
+    // 2. Obtener el nombre de forma segura
+    Object valorCelda = jTable1.getValueAt(filaSeleccionada, 0);
+    if (valorCelda == null) return;
+    String archivoAEliminar = valorCelda.toString();
+
+    // 3. VALIDACIÓN DE SEGURIDAD (LOCKS)
+    for (int i = 0; i < tablaProcesos.getRowCount(); i++) {
+        Object archivoEnProceso = tablaProcesos.getValueAt(i, 1);
+        if (archivoEnProceso != null && archivoEnProceso.toString().equals(archivoAEliminar)) {
+            javax.swing.JOptionPane.showMessageDialog(this, "¡ERROR! No se puede eliminar un archivo que está siendo usado por un proceso activo.");
+            return; 
+        }
+    }
+
+    // 4. Si pasó la validación, confirmar y borrar
+    int confirmar = javax.swing.JOptionPane.showConfirmDialog(this, 
+            "¿Estás seguro de eliminar " + archivoAEliminar + "?", 
+            "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
+
+    if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
+        // 5. Llamar al cerebro para liberar bloques y borrar de la lista
+        boolean exito = admin.eliminarArchivo(archivoAEliminar);
+
+        if (exito) {
+            // 6. Actualizar toda la interfaz
+            jPanel1.repaint();      // Los bloques vuelven a blanco
+            actualizarTabla();      // Desaparece de la tabla
+            actualizarArbol();      // Desaparece del JTree
+            javax.swing.JOptionPane.showMessageDialog(this, "Archivo eliminado y bloques liberados.");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al intentar eliminar el archivo.");
+        }
+    }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -436,6 +458,26 @@ if (gestorLocks.solicitarEscritura(nombreArchivo)) {
 }     // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void btnTerminarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarProcesoActionPerformed
+int fila = tablaProcesos.getSelectedRow();
+if (fila == -1) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un proceso de la tabla para terminarlo.");
+    return;
+}
+
+// 1. Obtener el nombre del archivo que tiene el lock
+String nombreArchivo = tablaProcesos.getValueAt(fila, 1).toString();
+
+// 2. Usar el gestor de Alma para liberar el Lock de Escritura
+gestorLocks.liberarEscritura(nombreArchivo);
+
+// 3. Quitar la fila de la tabla de procesos
+DefaultTableModel modelo = (DefaultTableModel) tablaProcesos.getModel();
+modelo.removeRow(fila);
+
+javax.swing.JOptionPane.showMessageDialog(this, "Proceso terminado. El archivo '" + nombreArchivo + "' ahora está libre.");        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTerminarProcesoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -472,6 +514,7 @@ if (gestorLocks.solicitarEscritura(nombreArchivo)) {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTerminarProceso;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
