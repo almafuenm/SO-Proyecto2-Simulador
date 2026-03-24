@@ -57,7 +57,7 @@ El proyecto esta estructurado para ser compilado mediante la herramienta de cons
 
 1. **Clonacion del Repositorio:**
    ```bash
-   git clone [https://github.com/tu_usuario/SO-Proyecto2-Simulador.git](https://github.com/almafuenm/SO-Proyecto2-Simulador.git)
+   git clone [https://github.com/tu_usuario/SO-Proyecto2-Simulador.git]
 
 2. **Apertura del Proyecto**
 * Inicie Apache NetBeans.
@@ -68,6 +68,8 @@ El proyecto esta estructurado para ser compilado mediante la herramienta de cons
 * Realice un Clean and Build para inicializar las dependencias y scripts de construccion locales.
 * Ejecute el proyecto (F6 o boton de Play).
 
-4. **Autores**
+---
+
+## Autores
 * Alma Fuenmayor
 * Iker Solar
