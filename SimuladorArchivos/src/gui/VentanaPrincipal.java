@@ -174,7 +174,19 @@ this.admin = new logica_sistema.AdministradorArchivos(this.disco);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
+// 1. Obtener la opción seleccionada
+String modo = jComboBox1.getSelectedItem().toString();
+
+// 2. Si es Modo Usuario, desactivamos los botones de escritura (Crear y Eliminar)
+if (modo.equals("Modo Usuario")) {
+    jButton1.setEnabled(false); // Botón Crear
+    jButton2.setEnabled(false); // Botón Eliminar
+    javax.swing.JOptionPane.showMessageDialog(this, "Modo Lectura activado. No se permiten modificaciones.");
+} else {
+    // 3. Si es Modo Administrador, reactivamos todo
+    jButton1.setEnabled(true);
+    jButton2.setEnabled(true);
+}        // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
