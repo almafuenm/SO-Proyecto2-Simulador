@@ -49,7 +49,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         jComboBox2 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        listaSolicitudes = new javax.swing.JList<>();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         txtNuevaPosicion = new javax.swing.JTextField();
@@ -112,12 +112,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
 
         jLabel1.setText("Posición del Cabezal: 0");
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(jList1);
+        jScrollPane3.setViewportView(listaSolicitudes);
 
         jButton3.setText("Simular Lectura");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -334,7 +329,21 @@ if (algoritmo.contains("SSTF")) {
     // FIFO: El orden de llegada
     bloquesOrdenados = planificador.planificarFIFO(bloquesOriginales);
 }
+// --- CÓDIGO PARA LLENAR LA LISTA DE SOLICITUDES ---
+// 1. Creamos un modelo para la lista
+javax.swing.DefaultListModel<String> modeloLista = new javax.swing.DefaultListModel<>();
 
+// 2. Recorremos los bloques que ya ordenó el algoritmo (SSTF, FIFO, etc.)
+for (int i = 0; i < bloquesOrdenados.size(); i++) {
+    modeloLista.addElement("Bloque: " + bloquesOrdenados.get(i));
+}
+
+// 3. Le pasamos el modelo a tu JList
+listaSolicitudes.setModel(modeloLista);
+// --------------------------------------------------
+
+// Ahora sí, lanzamos la animación que ya tenías
+ejecutarAnimacionCabezal(bloquesOrdenados);
 // 4. Lanzar la animación con la lista que ordenó el planificador
 ejecutarAnimacionCabezal(bloquesOrdenados);       // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -414,13 +423,13 @@ try {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTree jTree1;
+    private javax.swing.JList<String> listaSolicitudes;
     private javax.swing.JTextField txtNuevaPosicion;
     // End of variables declaration//GEN-END:variables
 private void actualizarTabla() {
