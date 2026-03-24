@@ -50,8 +50,9 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        jLabel2 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        txtNuevaPosicion = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,7 +96,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 326, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,6 +104,11 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         );
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIFO (First-In, First-Out)", "SSTF (Shortest Seek Time First)", "SCAN", "C-SCAN" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Posición del Cabezal: 0");
 
@@ -113,12 +119,23 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         });
         jScrollPane3.setViewportView(jList1);
 
-        jLabel2.setText("Algoritmo de Planificación");
-
         jButton3.setText("Simular Lectura");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Ir a");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        txtNuevaPosicion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNuevaPosicionActionPerformed(evt);
             }
         });
 
@@ -136,22 +153,23 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1)
                             .addComponent(jButton2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(jLabel1)))
-                        .addGap(338, 338, 338))
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNuevaPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addGap(183, 183, 183))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addGap(0, 0, Short.MAX_VALUE))))
@@ -164,9 +182,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +200,10 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
                                     .addComponent(jButton2))
                                 .addComponent(jComboBox1)
                                 .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel1))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(txtNuevaPosicion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton4)))
                         .addGap(5, 5, 5)))
                 .addComponent(jButton3)
                 .addContainerGap())
@@ -282,22 +301,75 @@ if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 int fila = jTable1.getSelectedRow();
 if (fila == -1) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo en la tabla");
+    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo de la tabla");
     return;
 }
 
+// 1. Obtener bloques del archivo seleccionado
 String nombre = jTable1.getValueAt(fila, 0).toString();
+estructuras.ListaEnlazada<Integer> bloquesOriginales = null;
 
-// Buscamos el archivo para obtener sus bloques
 for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
-    sistema_archivos.Archivo arc = admin.getCarpetaActual().getArchivos().get(i);
-    if (arc.getNombre().equals(nombre)) {
-        // En lugar de un for rápido, usamos nuestra nueva animación
-        ejecutarAnimacionCabezal(arc.getBloquesAsignados());
+    if (admin.getCarpetaActual().getArchivos().get(i).getNombre().equals(nombre)) {
+        bloquesOriginales = admin.getCarpetaActual().getArchivos().get(i).getBloquesAsignados();
         break;
     }
-}       // TODO add your handling code here:
+}
+
+// 2. Crear el planificador de Alma con la posición actual del cabezal
+planificacion.PlanificadorDisco planificador = new planificacion.PlanificadorDisco(disco.getPosicionCabezal());
+
+// 3. Aplicar el algoritmo seleccionado
+String algoritmo = jComboBox2.getSelectedItem().toString();
+estructuras.ListaEnlazada<Integer> bloquesOrdenados;
+
+if (algoritmo.contains("SSTF")) {
+    bloquesOrdenados = planificador.planificarSSTF(bloquesOriginales);
+} else if (algoritmo.contains("SCAN")) {
+    // SCAN necesita saber si sube o baja, le pondremos 'true' por defecto
+    bloquesOrdenados = planificador.planificarSCAN(bloquesOriginales, true);
+} else if (algoritmo.contains("C-SCAN")) {
+    bloquesOrdenados = planificador.planificarCSCAN(bloquesOriginales);
+} else {
+    // FIFO: El orden de llegada
+    bloquesOrdenados = planificador.planificarFIFO(bloquesOriginales);
+}
+
+// 4. Lanzar la animación con la lista que ordenó el planificador
+ejecutarAnimacionCabezal(bloquesOrdenados);       // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+try {
+    // 1. Leemos el número que escribiste en el cuadrito (ej. 50)
+    int nuevaPos = Integer.parseInt(txtNuevaPosicion.getText());
+    
+    // 2. Validamos que sea un bloque real (del 0 al 399)
+    if (nuevaPos >= 0 && nuevaPos < 400) {
+        
+        // 3. Actualizamos la LÓGICA (el objeto disco)
+        disco.setPosicionCabezal(nuevaPos);
+        
+        // 4. Actualizamos la VISTA (la etiqueta que ve el usuario)
+        // Cambia 'jLabel3' por el nombre real de tu etiqueta de posición
+        jButton4.setText("Posición del Cabezal: " + nuevaPos);
+        
+        javax.swing.JOptionPane.showMessageDialog(this, "Cabezal posicionado en el bloque " + nuevaPos);
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error: El disco solo tiene bloques del 0 al 399.");
+    }
+} catch (NumberFormatException e) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
+}        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void txtNuevaPosicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNuevaPosicionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNuevaPosicionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -338,10 +410,10 @@ for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -349,6 +421,7 @@ for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTree jTree1;
+    private javax.swing.JTextField txtNuevaPosicion;
     // End of variables declaration//GEN-END:variables
 private void actualizarTabla() {
     // Obtenemos el modelo de la tabla que dibujaste en el diseño
