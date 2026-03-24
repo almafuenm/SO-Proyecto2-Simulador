@@ -10,6 +10,7 @@ import estructuras.ListaEnlazada;
 public class SimuladorSD {
     private Archivo[] disco; 
     private int capacidad;
+    private int posicionCabezal = 0;
 
     public SimuladorSD(int capacidad) {
         this.capacidad = capacidad;
@@ -47,4 +48,11 @@ public class SimuladorSD {
 
     public Archivo[] getDisco() { return disco; }
     public int getCapacidad() { return capacidad; }
+    
+    public int getPosicionCabezal() { 
+    return posicionCabezal; 
+}
+    public void setPosicionCabezal(int pos) { 
+    this.posicionCabezal = pos; 
+}
 }

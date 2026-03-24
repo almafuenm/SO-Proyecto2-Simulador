@@ -4,6 +4,10 @@
  */
 package gui;
 
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 /**
  *
  * @author ikers
@@ -19,6 +23,7 @@ private logica_sistema.AdministradorArchivos admin;
         // Creamos un disco de 400 bloques (20x20 cuadritos)
 this.disco = new logica_sistema.SimuladorSD(400); 
 this.admin = new logica_sistema.AdministradorArchivos(this.disco);
+jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
 
 
 ((gui.PanelDisco) this.jPanel1).setSimulador(this.disco);
@@ -275,7 +280,23 @@ if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+int fila = jTable1.getSelectedRow();
+if (fila == -1) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo en la tabla");
+    return;
+}
+
+String nombre = jTable1.getValueAt(fila, 0).toString();
+
+// Buscamos el archivo para obtener sus bloques
+for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
+    sistema_archivos.Archivo arc = admin.getCarpetaActual().getArchivos().get(i);
+    if (arc.getNombre().equals(nombre)) {
+        // En lugar de un for rápido, usamos nuestra nueva animación
+        ejecutarAnimacionCabezal(arc.getBloquesAsignados());
+        break;
+    }
+}       // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -366,6 +387,34 @@ private void actualizarTabla() {
 
     // Aplicamos el nuevo modelo al JTree que arrastraste
     jTree1.setModel(new javax.swing.tree.DefaultTreeModel(rootVisual));
+}
+   private void moverCabezal(int destino) {
+    disco.setPosicionCabezal(destino);
+    // Cambia jLabel3 por el nombre que tenga tu etiqueta de "Posición del Cabezal"
+    jLabel1.setText("Posición del Cabezal: " + destino);
+}
+   private void ejecutarAnimacionCabezal(estructuras.ListaEnlazada<Integer> bloques) {
+    // Usamos un índice para saber por qué bloque vamos
+    final int[] indice = {0};
+
+    Timer timer = new Timer(500, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (indice[0] < bloques.size()) {
+                int bloqueDestino = bloques.get(indice[0]);
+                moverCabezal(bloqueDestino); // El método que ya creamos
+                
+                // Opcional: imprimir en consola para debug
+                System.out.println("Visitando bloque: " + bloqueDestino);
+                
+                indice[0]++;
+            } else {
+                ((Timer)e.getSource()).stop(); // Detener cuando termine la lista
+                javax.swing.JOptionPane.showMessageDialog(null, "Simulación finalizada.");
+            }
+        }
+    });
+    timer.start();
 }
 }
 
