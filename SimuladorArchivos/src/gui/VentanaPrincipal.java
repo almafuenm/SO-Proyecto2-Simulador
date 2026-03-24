@@ -9,12 +9,19 @@ package gui;
  * @author ikers
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
-
+private logica_sistema.SimuladorSD disco;
+private logica_sistema.AdministradorArchivos admin;
     /**
      * Creates new form VentanaPrincipal
      */
     public VentanaPrincipal() {
         initComponents();
+        // Creamos un disco de 400 bloques (20x20 cuadritos)
+this.disco = new logica_sistema.SimuladorSD(400); 
+this.admin = new logica_sistema.AdministradorArchivos(this.disco);
+
+
+((gui.PanelDisco) this.jPanel1).setSimulador(this.disco);
     }
 
     /**
@@ -124,7 +131,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+ try {
+    // Pedimos los datos al usuario con ventanitas emergentes
+    String nombre = javax.swing.JOptionPane.showInputDialog(this, "Nombre del archivo:");
+    if (nombre == null || nombre.trim().isEmpty()) return; // Si cancela o deja vacío, salimos
+
+    String tamanoStr = javax.swing.JOptionPane.showInputDialog(this, "Tamaño en bloques:");
+    if (tamanoStr == null) return;
+
+    int tamano = Integer.parseInt(tamanoStr); // Validamos que sea un número 
+    if (tamano <= 0) throw new NumberFormatException();
+
+    String dueno = "Admin"; // Por ahora estático
+
+    // Generamos un color aleatorio para diferenciar los archivos [cite: 33]
+    java.awt.Color colorAleatorio = new java.awt.Color((int)(Math.random() * 0x1000000));
+
+    // Llamamos al cerebro para crear el archivo
+    boolean exito = admin.crearArchivo(nombre, tamano, dueno, colorAleatorio);
+
+    if (exito) {
+        jPanel1.repaint(); // ¡MAGIA! Forzamos al panel a repintar los bloques ocupados
+        javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo '" + nombre + "' creado con éxito!");
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error: No hay espacio suficiente en el disco.");
+    }
+} catch (NumberFormatException e) {
+    // Si el usuario mete letras en el tamaño, el programa no explota [cite: 187, 188]
+    javax.swing.JOptionPane.showMessageDialog(this, "Error: El tamaño debe ser un número entero mayor a cero.");
+}       // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
