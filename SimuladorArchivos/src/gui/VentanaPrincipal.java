@@ -67,6 +67,11 @@ this.admin = new logica_sistema.AdministradorArchivos(this.disco);
         });
 
         jButton2.setText("Eliminar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Modo Administrador", "Modo Usuario" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -171,6 +176,38 @@ this.admin = new logica_sistema.AdministradorArchivos(this.disco);
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+// 1. Obtener la fila seleccionada en la tabla
+int filaSeleccionada = jTable1.getSelectedRow();
+
+if (filaSeleccionada == -1) {
+    javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un archivo de la tabla para eliminar.");
+    return;
+}
+
+// 2. Obtener el nombre del archivo de la primera columna (columna 0)
+String nombreEliminar = jTable1.getValueAt(filaSeleccionada, 0).toString();
+
+// 3. Confirmar eliminación
+int confirmar = javax.swing.JOptionPane.showConfirmDialog(this, 
+    "¿Estás seguro de eliminar '" + nombreEliminar + "'?", "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
+
+if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
+    // 4. Llamar al cerebro para liberar bloques y borrar de la lista
+    boolean exito = admin.eliminarArchivo(nombreEliminar);
+
+    if (exito) {
+        // 5. Actualizar toda la interfaz
+        jPanel1.repaint();   // Los bloques vuelven a blanco [cite: 35]
+        actualizarTabla();   // Desaparece de la tabla [cite: 67]
+        actualizarArbol();   // Desaparece del JTree [cite: 24]
+        javax.swing.JOptionPane.showMessageDialog(this, "Archivo eliminado y bloques liberados.");
+    } else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error al intentar eliminar el archivo.");
+    }
+}        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
