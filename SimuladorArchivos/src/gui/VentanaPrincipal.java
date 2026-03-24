@@ -162,7 +162,7 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
             }
         });
 
-        btnTerminarProceso.setText("Termianar Proceso");
+        btnTerminarProceso.setText("Terminar Proceso");
         btnTerminarProceso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnTerminarProcesoActionPerformed(evt);
