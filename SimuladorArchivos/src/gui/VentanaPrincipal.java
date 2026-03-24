@@ -14,23 +14,31 @@ import procesos.GestorLocks;
  *
  * @author ikers
  */
+
+/**
+ * Clase principal de la interfaz gráfica que actúa como el "Kernel Dashboard".
+ * Su función es integrar los módulos de hardware simulado (SD), lógica de archivos 
+ * y control de concurrencia en una sola vista operativa[cite: 10, 22].
+ * * Lógica de Diseño: Implementa el patrón Mediador, donde la ventana coordina 
+ * las actualizaciones entre el Administrador de Archivos y los paneles visuales.
+ */
 public class VentanaPrincipal extends javax.swing.JFrame {
-private logica_sistema.SimuladorSD disco;
-private logica_sistema.AdministradorArchivos admin;
-private procesos.GestorLocks gestorLocks;
+    private logica_sistema.SimuladorSD disco;
+    private logica_sistema.AdministradorArchivos admin;
+    private procesos.GestorLocks gestorLocks;
     /**
      * Creates new form VentanaPrincipal
      */
     public VentanaPrincipal() {
         initComponents();
-        // Creamos un disco de 400 bloques (20x20 cuadritos)
-this.disco = new logica_sistema.SimuladorSD(400); 
-this.admin = new logica_sistema.AdministradorArchivos(this.disco);
-this.gestorLocks = new procesos.GestorLocks();
-jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
+        
+        this.disco = new logica_sistema.SimuladorSD(400); 
+        this.admin = new logica_sistema.AdministradorArchivos(this.disco);
+        this.gestorLocks = new procesos.GestorLocks();
+        
+        jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
 
-
-((gui.PanelDisco) this.jPanel1).setSimulador(this.disco);
+        ((gui.PanelDisco) this.jPanel1).setSimulador(this.disco);
     }
 
     /**
@@ -252,90 +260,91 @@ jLabel1.setText("Posición del Cabezal: " + disco.getPosicionCabezal());
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
- try {
-    // Pedimos los datos al usuario con ventanitas emergentes
-    String nombre = javax.swing.JOptionPane.showInputDialog(this, "Nombre del archivo:");
-    if (nombre == null || nombre.trim().isEmpty()) return; // Si cancela o deja vacío, salimos
+        try {
+            // Fase de Captura: Interacción con el usuario mediante diálogos modales
+            String nombre = javax.swing.JOptionPane.showInputDialog(this, "Nombre del archivo:");
+            if (nombre == null || nombre.trim().isEmpty()) return; 
 
-    String tamanoStr = javax.swing.JOptionPane.showInputDialog(this, "Tamaño en bloques:");
-    if (tamanoStr == null) return;
+            String tamanoStr = javax.swing.JOptionPane.showInputDialog(this, "Tamaño en bloques:");
+            if (tamanoStr == null) return;
 
-    int tamano = Integer.parseInt(tamanoStr); // Validamos que sea un número 
-    if (tamano <= 0) throw new NumberFormatException();
+            // Fase de Validación: Asegura que el tamaño sea un entero positivo (Validación de Rango)
+            int tamano = Integer.parseInt(tamanoStr); 
+            if (tamano <= 0) throw new NumberFormatException();
 
-    String dueno = "Admin"; // Por ahora estático
+            String dueno = "Admin"; // Rol por defecto según requerimientos de seguridad
 
-    // Generamos un color aleatorio para diferenciar los archivos [cite: 33]
-    java.awt.Color colorAleatorio = new java.awt.Color((int)(Math.random() * 0x1000000));
+            // Identificación Visual: Genera un color único para diferenciar archivos en el SD
+            java.awt.Color colorAleatorio = new java.awt.Color((int)(Math.random() * 0x1000000));
 
-    // Llamamos al cerebro para crear el archivo
-    boolean exito = admin.crearArchivo(nombre, tamano, dueno, colorAleatorio);
+            // Fase de Ejecución: El Administrador intenta asignar bloques en el disco simulado
+            boolean exito = admin.crearArchivo(nombre, tamano, dueno, colorAleatorio);
 
-    if (exito) {
-        jPanel1.repaint();
-        if (exito) {
-    jPanel1.repaint(); // Actualiza el disco
-    actualizarTabla(); // <--- AGREGA ESTA LÍNEA
-    actualizarArbol(); // <--- AGREGA ESTA LÍNEA
-    javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo creado!");
-}
-        javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo '" + nombre + "' creado con éxito!");
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error: No hay espacio suficiente en el disco.");
-    }
-} catch (NumberFormatException e) {
-    // Si el usuario mete letras en el tamaño, el programa no explota [cite: 187, 188]
-    javax.swing.JOptionPane.showMessageDialog(this, "Error: El tamaño debe ser un número entero mayor a cero.");
-}       // TODO add your handling code here:
+            // Transición de Estado y Feedback: Si el kernel confirma la operación, se actualiza la telemetría
+            if (exito) {
+                jPanel1.repaint(); // Redibuja el mapa de bloques del disco
+                actualizarTabla(); // Sincroniza la tabla técnica de asignación
+                actualizarArbol(); // Actualiza la jerarquía visual (JTree)
+
+                javax.swing.JOptionPane.showMessageDialog(this, "¡Archivo '" + nombre + "' creado con éxito!");
+            } else {
+                // Manejo de Error: Fallo por falta de recursos físicos (disco lleno)
+                javax.swing.JOptionPane.showMessageDialog(this, "Error: No hay espacio suficiente en el disco.");
+            }
+        } catch (NumberFormatException e) {
+            // Robustez del Sistema: Captura errores de tipo de dato para evitar el cierre del programa.
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: El tamaño debe ser un número entero mayor a cero.");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-// 1. Obtener la opción seleccionada
-String modo = jComboBox1.getSelectedItem().toString();
+        // 1. Obtener la opción seleccionada
+        String modo = jComboBox1.getSelectedItem().toString();
 
-// 2. Si es Modo Usuario, desactivamos los botones de escritura (Crear y Eliminar)
-if (modo.equals("Modo Usuario")) {
-    jButton1.setEnabled(false); // Botón Crear
-    jButton2.setEnabled(false); // Botón Eliminar
-    javax.swing.JOptionPane.showMessageDialog(this, "Modo Lectura activado. No se permiten modificaciones.");
-} else {
-    // 3. Si es Modo Administrador, reactivamos todo
-    jButton1.setEnabled(true);
-    jButton2.setEnabled(true);
-}        // TODO add your handling code here:
+        // 2. Si es Modo Usuario, desactivamos los botones de escritura (Crear y Eliminar)
+        if (modo.equals("Modo Usuario")) {
+            jButton1.setEnabled(false); // Botón Crear
+            jButton2.setEnabled(false); // Botón Eliminar
+            javax.swing.JOptionPane.showMessageDialog(this, "Modo Lectura activado. No se permiten modificaciones.");
+        } else {
+            // 3. Si es Modo Administrador, reactivamos todo
+            jButton1.setEnabled(true);
+            jButton2.setEnabled(true);
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-// 1. Verificar si hay una fila seleccionada
-    int filaSeleccionada = jTable1.getSelectedRow();
-    if (filaSeleccionada == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un archivo de la tabla para eliminar.");
-        return;
-    }
-
-    // 2. Obtener el nombre de forma segura
-    Object valorCelda = jTable1.getValueAt(filaSeleccionada, 0);
-    if (valorCelda == null) return;
-    String archivoAEliminar = valorCelda.toString();
-
-    // 3. VALIDACIÓN DE SEGURIDAD (LOCKS)
-    for (int i = 0; i < tablaProcesos.getRowCount(); i++) {
-        Object archivoEnProceso = tablaProcesos.getValueAt(i, 1);
-        if (archivoEnProceso != null && archivoEnProceso.toString().equals(archivoAEliminar)) {
-            javax.swing.JOptionPane.showMessageDialog(this, "¡ERROR! No se puede eliminar un archivo que está siendo usado por un proceso activo.");
-            return; 
+        // 1. Verificar si hay una fila seleccionada
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, selecciona un archivo de la tabla para eliminar.");
+            return;
         }
-    }
 
-    // 4. Si pasó la validación, confirmar y borrar
-    int confirmar = javax.swing.JOptionPane.showConfirmDialog(this, 
-            "¿Estás seguro de eliminar " + archivoAEliminar + "?", 
-            "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
+        // 2. Obtener el nombre de forma segura
+        Object valorCelda = jTable1.getValueAt(filaSeleccionada, 0);
+        if (valorCelda == null) return;
+        String archivoAEliminar = valorCelda.toString();
 
-    if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
-        // 5. Llamar al cerebro para liberar bloques y borrar de la lista
-        boolean exito = admin.eliminarArchivo(archivoAEliminar);
+        // 3. VALIDACIÓN DE SEGURIDAD (LOCKS)
+        for (int i = 0; i < tablaProcesos.getRowCount(); i++) {
+            Object archivoEnProceso = tablaProcesos.getValueAt(i, 1);
+            if (archivoEnProceso != null && archivoEnProceso.toString().equals(archivoAEliminar)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "¡ERROR! No se puede eliminar un archivo que está siendo usado por un proceso activo.");
+                return; 
+            }
+        }
+
+        // 4. Si pasó la validación, confirmar y borrar
+        int confirmar = javax.swing.JOptionPane.showConfirmDialog(this, 
+                "¿Estás seguro de eliminar " + archivoAEliminar + "?", 
+                "Confirmar", javax.swing.JOptionPane.YES_NO_OPTION);
+
+        if (confirmar == javax.swing.JOptionPane.YES_OPTION) {
+            // 5. Llamar al cerebro para liberar bloques y borrar de la lista
+            boolean exito = admin.eliminarArchivo(archivoAEliminar);
 
         if (exito) {
             // 6. Actualizar toda la interfaz
@@ -350,63 +359,63 @@ if (modo.equals("Modo Usuario")) {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-int fila = jTable1.getSelectedRow();
-if (fila == -1) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo de la tabla");
-    return;
-}
+        int fila = jTable1.getSelectedRow();
+        if (fila == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo de la tabla");
+            return;
+        }
 
-// 1. Obtener bloques del archivo seleccionado
-String nombre = jTable1.getValueAt(fila, 0).toString();
-estructuras.ListaEnlazada<Integer> bloquesOriginales = null;
+        // 1. Obtener bloques del archivo seleccionado
+        String nombre = jTable1.getValueAt(fila, 0).toString();
+        estructuras.ListaEnlazada<Integer> bloquesOriginales = null;
 
-for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
-    if (admin.getCarpetaActual().getArchivos().get(i).getNombre().equals(nombre)) {
-        bloquesOriginales = admin.getCarpetaActual().getArchivos().get(i).getBloquesAsignados();
-        break;
-    }
-}
+        for (int i = 0; i < admin.getCarpetaActual().getArchivos().size(); i++) {
+            if (admin.getCarpetaActual().getArchivos().get(i).getNombre().equals(nombre)) {
+                bloquesOriginales = admin.getCarpetaActual().getArchivos().get(i).getBloquesAsignados();
+                break;
+            }
+        }
 
-// 2. Crear el planificador de Alma con la posición actual del cabezal
-planificacion.PlanificadorDisco planificador = new planificacion.PlanificadorDisco(disco.getPosicionCabezal());
+        // 2. Crear el planificador de Alma con la posición actual del cabezal
+        planificacion.PlanificadorDisco planificador = new planificacion.PlanificadorDisco(disco.getPosicionCabezal());
 
-// 3. Aplicar el algoritmo seleccionado
-String algoritmo = jComboBox2.getSelectedItem().toString();
-estructuras.ListaEnlazada<Integer> bloquesOrdenados;
+        // 3. Aplicar el algoritmo seleccionado
+        String algoritmo = jComboBox2.getSelectedItem().toString();
+        estructuras.ListaEnlazada<Integer> bloquesOrdenados;
 
-if (algoritmo.contains("SSTF")) {
-    bloquesOrdenados = planificador.planificarSSTF(bloquesOriginales);
-} else if (algoritmo.contains("SCAN")) {
-    // SCAN necesita saber si sube o baja, le pondremos 'true' por defecto
-    bloquesOrdenados = planificador.planificarSCAN(bloquesOriginales, true);
-} else if (algoritmo.contains("C-SCAN")) {
-    bloquesOrdenados = planificador.planificarCSCAN(bloquesOriginales);
-} else {
-    // FIFO: El orden de llegada
-    bloquesOrdenados = planificador.planificarFIFO(bloquesOriginales);
-}
-// --- CÓDIGO PARA LLENAR LA LISTA DE SOLICITUDES ---
-// 1. Creamos un modelo para la lista
-javax.swing.DefaultListModel<String> modeloLista = new javax.swing.DefaultListModel<>();
+        if (algoritmo.contains("SSTF")) {
+            bloquesOrdenados = planificador.planificarSSTF(bloquesOriginales);
+        } else if (algoritmo.contains("SCAN")) {
+            // SCAN necesita saber si sube o baja, le pondremos 'true' por defecto
+            bloquesOrdenados = planificador.planificarSCAN(bloquesOriginales, true);
+        } else if (algoritmo.contains("C-SCAN")) {
+            bloquesOrdenados = planificador.planificarCSCAN(bloquesOriginales);
+        } else {
+            // FIFO: El orden de llegada
+            bloquesOrdenados = planificador.planificarFIFO(bloquesOriginales);
+        }
+        // --- CÓDIGO PARA LLENAR LA LISTA DE SOLICITUDES ---
+        // 1. Creamos un modelo para la lista
+        javax.swing.DefaultListModel<String> modeloLista = new javax.swing.DefaultListModel<>();
 
-// 2. Recorremos los bloques que ya ordenó el algoritmo (SSTF, FIFO, etc.)
-for (int i = 0; i < bloquesOrdenados.size(); i++) {
-    modeloLista.addElement("Bloque: " + bloquesOrdenados.get(i));
-}
+        // 2. Recorremos los bloques que ya ordenó el algoritmo (SSTF, FIFO, etc.)
+        for (int i = 0; i < bloquesOrdenados.size(); i++) {
+            modeloLista.addElement("Bloque: " + bloquesOrdenados.get(i));
+        }
 
-    // --- NUEVO CÓDIGO: ENCENDER LA ANIMACIÓN ---
-    // jPanel1 es el nombre por defecto, cámbialo si tu panel se llama distinto
-    animacion.AnimadorCabezal animador = new animacion.AnimadorCabezal((gui.PanelDisco) jPanel1); 
-    animador.animarRuta(bloquesOrdenados);
-    // ----------------------------------------------
-// 3. Le pasamos el modelo a tu JList
-listaSolicitudes.setModel(modeloLista);
-// --------------------------------------------------
+            // --- NUEVO CÓDIGO: ENCENDER LA ANIMACIÓN ---
+            // jPanel1 es el nombre por defecto, cámbialo si tu panel se llama distinto
+            animacion.AnimadorCabezal animador = new animacion.AnimadorCabezal((gui.PanelDisco) jPanel1); 
+            animador.animarRuta(bloquesOrdenados);
+            // ----------------------------------------------
+        // 3. Le pasamos el modelo a tu JList
+        listaSolicitudes.setModel(modeloLista);
+        // --------------------------------------------------
 
-// Ahora sí, lanzamos la animación que ya tenías
-ejecutarAnimacionCabezal(bloquesOrdenados);
-// 4. Lanzar la animación con la lista que ordenó el planificador
-ejecutarAnimacionCabezal(bloquesOrdenados);       // TODO add your handling code here:
+        // Ahora sí, lanzamos la animación que ya tenías
+        ejecutarAnimacionCabezal(bloquesOrdenados);
+        // 4. Lanzar la animación con la lista que ordenó el planificador
+        ejecutarAnimacionCabezal(bloquesOrdenados);       // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -414,27 +423,27 @@ ejecutarAnimacionCabezal(bloquesOrdenados);       // TODO add your handling code
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-try {
-    // 1. Leemos el número que escribiste en el cuadrito (ej. 50)
-    int nuevaPos = Integer.parseInt(txtNuevaPosicion.getText());
-    
-    // 2. Validamos que sea un bloque real (del 0 al 399)
-    if (nuevaPos >= 0 && nuevaPos < 400) {
-        
-        // 3. Actualizamos la LÓGICA (el objeto disco)
-        disco.setPosicionCabezal(nuevaPos);
-        
-        // 4. Actualizamos la VISTA (la etiqueta que ve el usuario)
-        // Cambia 'jLabel3' por el nombre real de tu etiqueta de posición
-        jButton4.setText("Posición del Cabezal: " + nuevaPos);
-        
-        javax.swing.JOptionPane.showMessageDialog(this, "Cabezal posicionado en el bloque " + nuevaPos);
-    } else {
-        javax.swing.JOptionPane.showMessageDialog(this, "Error: El disco solo tiene bloques del 0 al 399.");
-    }
-} catch (NumberFormatException e) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
-}        // TODO add your handling code here:
+        try {
+            // 1. Leemos el número que escribiste en el cuadrito (ej. 50)
+            int nuevaPos = Integer.parseInt(txtNuevaPosicion.getText());
+
+            // 2. Validamos que sea un bloque real (del 0 al 399)
+            if (nuevaPos >= 0 && nuevaPos < 400) {
+
+                // 3. Actualizamos la LÓGICA (el objeto disco)
+                disco.setPosicionCabezal(nuevaPos);
+
+                // 4. Actualizamos la VISTA (la etiqueta que ve el usuario)
+                // Cambia 'jLabel3' por el nombre real de tu etiqueta de posición
+                jButton4.setText("Posición del Cabezal: " + nuevaPos);
+
+                javax.swing.JOptionPane.showMessageDialog(this, "Cabezal posicionado en el bloque " + nuevaPos);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Error: El disco solo tiene bloques del 0 al 399.");
+            }
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
+        }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void txtNuevaPosicionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNuevaPosicionActionPerformed
@@ -442,45 +451,45 @@ try {
     }//GEN-LAST:event_txtNuevaPosicionActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-int fila = jTable1.getSelectedRow(); // Verifica que sea jTable1 o jTable2 según tu diseño
-if (fila == -1) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo para que el proceso lo use.");
-    return;
-}
+        int fila = jTable1.getSelectedRow(); // Verifica que sea jTable1 o jTable2 según tu diseño
+        if (fila == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un archivo para que el proceso lo use.");
+            return;
+        }
 
-String nombreArchivo = jTable1.getValueAt(fila, 0).toString();
+        String nombreArchivo = jTable1.getValueAt(fila, 0).toString();
 
-// 1. Usamos el objeto gestorLocks para pedir permiso de escritura
-if (gestorLocks.solicitarEscritura(nombreArchivo)) {
-    
-    // 2. Si se pudo bloquear, lo agregamos a la tabla de procesos
-    DefaultTableModel modelo = (DefaultTableModel) tablaProcesos.getModel();
-    modelo.addRow(new Object[]{"P-" + (modelo.getRowCount() + 1), nombreArchivo, "ESCRITURA (LOCK)"});
-    
-    javax.swing.JOptionPane.showMessageDialog(this, "Proceso iniciado. Archivo '" + nombreArchivo + "' bloqueado con éxito.");
-} else {
-    javax.swing.JOptionPane.showMessageDialog(this, "Error: El archivo ya está siendo usado por otro proceso.");
-}     // TODO add your handling code here:
+        // 1. Usamos el objeto gestorLocks para pedir permiso de escritura
+        if (gestorLocks.solicitarEscritura(nombreArchivo)) {
+
+            // 2. Si se pudo bloquear, lo agregamos a la tabla de procesos
+            DefaultTableModel modelo = (DefaultTableModel) tablaProcesos.getModel();
+            modelo.addRow(new Object[]{"P-" + (modelo.getRowCount() + 1), nombreArchivo, "ESCRITURA (LOCK)"});
+
+            javax.swing.JOptionPane.showMessageDialog(this, "Proceso iniciado. Archivo '" + nombreArchivo + "' bloqueado con éxito.");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error: El archivo ya está siendo usado por otro proceso.");
+        }     // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void btnTerminarProcesoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTerminarProcesoActionPerformed
-int fila = tablaProcesos.getSelectedRow();
-if (fila == -1) {
-    javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un proceso de la tabla para terminarlo.");
-    return;
-}
+        int fila = tablaProcesos.getSelectedRow();
+        if (fila == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Selecciona un proceso de la tabla para terminarlo.");
+            return;
+        }
 
-// 1. Obtener el nombre del archivo que tiene el lock
-String nombreArchivo = tablaProcesos.getValueAt(fila, 1).toString();
+        // 1. Obtener el nombre del archivo que tiene el lock
+        String nombreArchivo = tablaProcesos.getValueAt(fila, 1).toString();
 
-// 2. Usar el gestor de Alma para liberar el Lock de Escritura
-gestorLocks.liberarEscritura(nombreArchivo);
+        // 2. Usar el gestor de Alma para liberar el Lock de Escritura
+        gestorLocks.liberarEscritura(nombreArchivo);
 
-// 3. Quitar la fila de la tabla de procesos
-DefaultTableModel modelo = (DefaultTableModel) tablaProcesos.getModel();
-modelo.removeRow(fila);
+        // 3. Quitar la fila de la tabla de procesos
+        DefaultTableModel modelo = (DefaultTableModel) tablaProcesos.getModel();
+        modelo.removeRow(fila);
 
-javax.swing.JOptionPane.showMessageDialog(this, "Proceso terminado. El archivo '" + nombreArchivo + "' ahora está libre.");        // TODO add your handling code here:
+        javax.swing.JOptionPane.showMessageDialog(this, "Proceso terminado. El archivo '" + nombreArchivo + "' ahora está libre.");        // TODO add your handling code here:
     }//GEN-LAST:event_btnTerminarProcesoActionPerformed
 
     /**

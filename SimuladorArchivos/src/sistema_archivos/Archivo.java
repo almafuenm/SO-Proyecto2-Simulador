@@ -12,13 +12,26 @@ package sistema_archivos;
 import estructuras.ListaEnlazada;
 import java.awt.Color;
 
+/**
+ * Clase que representa la entidad lógica de un Archivo en el sistema.
+ * Funciona como el descriptor de recursos, almacenando tanto los metadatos 
+ * de usuario como la estructura física de sus datos en el disco simulado.
+ * * Lógica de Asignación: Implementa la 'Asignación Encadenada' mediante una 
+ * ListaEnlazada que almacena los índices de los bloques ocupados en el SD.
+ */
 public class Archivo {
     private String nombre;
     private int tamañoBloques;
     private String dueño;
-    private Color color; // Requerimiento: diferenciar archivos por colores
+    private Color color; // Requisito Visual: Permite identificar fragmentación en el disco.
     private ListaEnlazada<Integer> bloquesAsignados;
 
+    /**
+     * Constructor: Crea una nueva entrada en el sistema de archivos.
+     * Estado Inicial: El archivo nace con metadatos definidos, pero su lista 
+     * de 'bloquesAsignados' está vacía hasta que el Administrador ejecute 
+     * la lógica de escritura en el SimuladorSD.
+     */
     public Archivo(String nombre, int tamaño, String dueño, Color color) {
         this.nombre = nombre;
         this.tamañoBloques = tamaño;
@@ -27,14 +40,27 @@ public class Archivo {
         this.bloquesAsignados = new ListaEnlazada<>();
     }
 
-    // Getters y Setters
+    // --- Getters y Setters ---
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+    
     public int getTamañoBloques() { return tamañoBloques; }
     public String getDueño() { return dueño; }
     public Color getColor() { return color; }
+
+    /**
+     * Acceso a la Estructura Física: Devuelve la cadena de bloques que 
+     * componen el archivo. Esta lista es fundamental para que el 
+     * 'AnimadorCabezal' conozca la ruta exacta que debe recorrer el disco.
+     */
     public ListaEnlazada<Integer> getBloquesAsignados() { return bloquesAsignados; }
     
+    /**
+     * Lógica de Representación: Retorna el nombre del archivo.
+     * Es esencial para la integración con el JTree, permitiendo que el 
+     * componente gráfico renderice el nodo correctamente en la jerarquía.
+     */
     @Override
-    public String toString() { return nombre; } // Necesario para que el JTree muestre el nombre
+    public String toString() { return nombre; } 
 }
